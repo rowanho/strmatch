@@ -1,13 +1,5 @@
 package strlib
 
-import (
-	"errors"
-)
-
-var (
-	ErrwordNotFound = errors.New("word not found in map")
-	ErrWrongType = errors.New("Trying to populate the map with >1 type")
-)
 
 type trieNode struct {
 	children []*trieNode
