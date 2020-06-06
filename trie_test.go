@@ -2,29 +2,72 @@ package strlib
 
 import (
 	"testing"
+	"sort"
 )
 
 
 func TestSearch(t *testing.T) {
-	keys := []string{"the", "a", "b", "cd", "he", "sh"}
+	words := []string{"the", "a", "b", "cd", "he", "sh"}
 	trie := NewTrie()
-	for _, key := range keys {
-		trie.insert(key)
+	for _, word := range words {
+		trie.Insert(word)
 	}
 
 	foundStrings := []string{"the", "a", "cd"}
 	wrongStrings := []string{"she", "ah", "e"}
 
 	for _, found := range foundStrings {
-		if trie.search(found) != true {
+		if trie.Search(found) != true {
 			t.Errorf("%s should be found in the trie but isn't", found)
 		}		
 	}
 
 	for _, wrong := range wrongStrings {
-		if trie.search(wrong) == true {
+		if trie.Search(wrong) == true {
 			t.Errorf("%s shouldn't  be found in the trie but is", wrong)
 		}		
 	}
 
+}
+
+/*
+* Check slice of strings is the same (disregard order)
+*/
+func sameStringsSlice(a []string, b []string) bool {
+	sort.Strings(a)
+	sort.Strings(b)
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i, s := range a {
+		if s != b[i] {
+			return false
+		}
+	}
+	return true  
+}
+
+func TestPrefixMatch(t *testing.T) {
+	words := []string{"their", "the", "there", "these", "bolt", "bowl", "boolean"}
+	trie := NewTrie()
+	for _, word := range words {
+		trie.Insert(word)
+	}
+
+	prefixes := []string{"the", "bo", "", "h", "a"}
+	prefixMatches := [][]string{
+		{"their", "the", "there", "these"},
+		{"bolt", "bowl", "boolean"},
+		{"their", "the", "there", "these", "bolt", "bowl", "boolean"},
+		{},
+		{},
+	}
+
+	for i, prefix := range prefixes {
+		r := trie.PrefixMatch(prefix) 
+		if !sameStringsSlice(r, prefixMatches[i]) {
+			t.Errorf("Matches found %v don't match correct matches %v", r, prefixMatches[i])			
+		}
+	}
 }
