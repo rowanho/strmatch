@@ -30,7 +30,7 @@ func TestSearch(t *testing.T) {
 }
 
 /*
-* Check slice of strings is the same (disregard order)
+* Check slice of strings is the same 
 */
 func sameStringsSlice(a []string, b []string) bool {
 	if len(a) != len(b) {
