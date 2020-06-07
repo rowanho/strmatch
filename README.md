@@ -15,5 +15,5 @@ for _, s := range searchesMade {
 
 We can then match a prefix, the returned list is sorted in descending order of frequency
 ```
-t.PrefixMatch("the") // Should return {"these", "there", "their"}
+t.PrefixMatch("the") // Returns {"these", "there", "their"}
 ```
