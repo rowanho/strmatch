@@ -1,8 +1,7 @@
-package strlib
+package strmatch
 
 import (
 	"testing"
-	"sort"
 )
 
 
@@ -34,8 +33,6 @@ func TestSearch(t *testing.T) {
 * Check slice of strings is the same (disregard order)
 */
 func sameStringsSlice(a []string, b []string) bool {
-	sort.Strings(a)
-	sort.Strings(b)
 	if len(a) != len(b) {
 		return false
 	}
@@ -50,16 +47,19 @@ func sameStringsSlice(a []string, b []string) bool {
 
 func TestPrefixMatch(t *testing.T) {
 	words := []string{"their", "the", "there", "these", "bolt", "bowl", "boolean"}
+	frequencies := []int{5, 4, 3, 7, 6, 8, 2}
 	trie := NewTrie()
-	for _, word := range words {
-		trie.Insert(word)
+	for i, word := range words {
+		for j := 0; j < frequencies[i]; j++ {
+			trie.Insert(word)			
+		} 
 	}
 
 	prefixes := []string{"the", "bo", "", "h", "a"}
 	prefixMatches := [][]string{
-		{"their", "the", "there", "these"},
-		{"bolt", "bowl", "boolean"},
-		{"their", "the", "there", "these", "bolt", "bowl", "boolean"},
+		{"these", "their", "the","there"},
+		{"bowl", "bolt", "boolean"},
+		{"bowl", "these", "bolt", "their", "the", "there", "boolean"},
 		{},
 		{},
 	}

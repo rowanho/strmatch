@@ -1,9 +1,13 @@
-package strlib
+package strmatch
 
+import (
+	"github.com/bradfitz/slice"
+)
 
 type trieNode struct {
 	children []*trieNode
 	isEnd bool
+	frequency int
 }
 
 /*
@@ -13,6 +17,7 @@ func  newTrieNode() *trieNode {
 	tn := new(trieNode)
 	tn.children = make([]*trieNode, 26)
 	tn.isEnd = false
+	tn.frequency = 0
 	return tn
 }
 
@@ -48,6 +53,7 @@ func (t *Trie) Insert(word string) {
 		}
 		current = current.children[index]
 	}
+	current.frequency++
 	current.isEnd = true
 }
 
@@ -68,16 +74,20 @@ func (t *Trie) Search(word string)  bool {
 	return (current != nil) && current.isEnd
 }
 
+type prefixFrequency struct {
+	p string
+	f int
+}
 
 /*
 * Helper function - enumerates all possible words from the starting trieNode
 */ 
-func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]string) {
+func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]prefixFrequency) {
 	if tn == nil {
 		return
 	}
 	if tn.isEnd {
-		*prefixes = append(*prefixes, prefix)		
+		*prefixes = append(*prefixes, prefixFrequency{p: prefix, f: tn.frequency,})		
 	}
 	for i := range tn.children {
 		r := rune(i + int('a'))
@@ -86,7 +96,7 @@ func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]string) {
 }
 
 /* 
-* Returns a list of the trie entries that match the given prefix
+* Returns a list of the trie entries that match the given prefix, sorted by frequency
 */ 
 func (t *Trie) PrefixMatch(prefix string) []string {
 	prefixR := []rune(prefix)
@@ -102,11 +112,17 @@ func (t *Trie) PrefixMatch(prefix string) []string {
 	if current == nil {
 		return []string{}
 	}
-	prefixes := make([]string, 0)
+	prefixes := make([]prefixFrequency, 0)
 	enumFromPrefix(current, prefix, &prefixes)
-	return prefixes
+	slice.Sort(prefixes, func(i, j int) bool {
+		return prefixes[i].f < prefixes[j].f
+	})
+	l = len(prefixes)
+	res := make([]string, l)
+	for i := 0; i < l; i++ {
+		res[l - 1 -i] = prefixes[i].p
+	}
+	return res
 }
-
-
 
 
