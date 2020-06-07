@@ -5,7 +5,7 @@ import (
 )
 
 type trieNode struct {
-	children []*trieNode
+	children map[rune]*trieNode
 	isEnd bool
 	frequency int
 }
@@ -15,16 +15,12 @@ type trieNode struct {
 */
 func  newTrieNode() *trieNode {
 	tn := new(trieNode)
-	tn.children = make([]*trieNode, 26)
+	tn.children = make(map[rune]*trieNode)
 	tn.isEnd = false
 	tn.frequency = 0
 	return tn
 }
 
-
-func ord(r rune) int {
-	return int(r) - int('a')
-}
 
 type Trie struct {
 	root *trieNode
@@ -47,11 +43,11 @@ func (t *Trie) Insert(word string) {
 	current := t.root
 	l := len(word)
 	for lvl := 0; lvl < l; lvl++ {
-		index := ord(wordR[lvl])
-		if current.children[index] == nil {
-			current.children[index] = newTrieNode()
+		r:= wordR[lvl]
+		if _, exists := current.children[r]; !exists {
+			current.children[r] = newTrieNode()
 		}
-		current = current.children[index]
+		current = current.children[r]
 	}
 	current.frequency++
 	current.isEnd = true
@@ -65,11 +61,11 @@ func (t *Trie) Search(word string)  bool {
 	current := t.root
 	l := len(word)
 	for lvl := 0; lvl < l; lvl++ {
-		index := ord(wordR[lvl])
-		if current.children[index] == nil{
-			return false
+		r:= wordR[lvl]
+		if _, exists := current.children[r]; !exists {
+			current.children[r] = newTrieNode()
 		}
-		current = current.children[index]
+		current = current.children[r]
 	} 
 	return (current != nil) && current.isEnd
 }
@@ -83,15 +79,11 @@ type prefixFrequency struct {
 * Helper function - enumerates all possible words from the starting trieNode
 */ 
 func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]prefixFrequency) {
-	if tn == nil {
-		return
-	}
 	if tn.isEnd {
 		*prefixes = append(*prefixes, prefixFrequency{p: prefix, f: tn.frequency,})		
 	}
-	for i := range tn.children {
-		r := rune(i + int('a'))
-		enumFromPrefix(tn.children[i], prefix + string(r), prefixes)
+	for r := range tn.children {
+		enumFromPrefix(tn.children[r], prefix + string(r), prefixes)
 	}
 }
 
@@ -103,11 +95,11 @@ func (t *Trie) PrefixMatch(prefix string) []string {
 	current := t.root
 	l := len(prefix) 
 	for lvl := 0; lvl < l; lvl++ {
-		index := ord(prefixR[lvl])
-		if current.children[index] == nil{
-			return []string{}
+		r:= prefixR[lvl]
+		if _, exists := current.children[r]; !exists {
+			current.children[r] = newTrieNode()
 		}
-		current = current.children[index]
+		current = current.children[r]
 	} 
 	if current == nil {
 		return []string{}
