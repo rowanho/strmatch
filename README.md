@@ -8,7 +8,7 @@ t := NewTrie()
 
 // Insert data (eg each time a user makes a search in a search engine)
 // Strings should be lowercase alpbabet only
-searchesMade := {"their", "there", "there", "these", "these", "these"}
+searchesMade := []string{"their", "there", "there", "these", "these", "these"}
 for _, s := range searchesMade {
    t.Insert(s)
 }
