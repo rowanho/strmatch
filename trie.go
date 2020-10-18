@@ -10,9 +10,7 @@ type trieNode struct {
 	frequency int
 }
 
-/*
-* TrieNode constructor 
-*/
+// TrieNode constructor 
 func  newTrieNode() *trieNode {
 	tn := new(trieNode)
 	tn.children = make(map[rune]*trieNode)
@@ -26,18 +24,15 @@ type Trie struct {
 	root *trieNode
 }
 
-/*
-* Trie constructor 
-*/
+
+// Trie constructor 
 func NewTrie() *Trie {
 	t := new(Trie)
 	t.root = newTrieNode()
 	return t
 }
 
-/*
-* Inserts a word into the trie
-*/
+// Inserts a word into the trie
 func (t *Trie) Insert(word string) {
 	wordR := []rune(word)
 	current := t.root
@@ -53,9 +48,8 @@ func (t *Trie) Insert(word string) {
 	current.isEnd = true
 }
 
-/*
-* Checks if a word is in the trie
-*/
+
+// Checks if a word is in the trie
 func (t *Trie) Search(word string)  bool {
 	wordR := []rune(word)
 	current := t.root
@@ -75,9 +69,7 @@ type prefixFrequency struct {
 	f int
 }
 
-/*
-* Helper function - enumerates all possible words from the starting trieNode
-*/ 
+// Helper function - enumerates all possible words from the starting trieNode
 func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]prefixFrequency) {
 	if tn.isEnd {
 		*prefixes = append(*prefixes, prefixFrequency{p: prefix, f: tn.frequency,})		
@@ -87,9 +79,7 @@ func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]prefixFrequency) {
 	}
 }
 
-/* 
-* Returns a list of the trie entries that match the given prefix, sorted by frequency
-*/ 
+// Returns a list of the trie entries that match the given prefix, sorted by frequency
 func (t *Trie) PrefixMatch(prefix string) []string {
 	prefixR := []rune(prefix)
 	current := t.root
