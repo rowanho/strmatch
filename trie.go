@@ -69,7 +69,7 @@ type prefixFrequency struct {
 	f int
 }
 
-// Helper function - enumerates all possible words from the starting trieNode
+// Helper function - Enumerates all possible words from the starting trieNode
 func enumFromPrefix(tn *trieNode, prefix string, prefixes  *[]prefixFrequency) {
 	if tn.isEnd {
 		*prefixes = append(*prefixes, prefixFrequency{p: prefix, f: tn.frequency,})		
@@ -106,5 +106,3 @@ func (t *Trie) PrefixMatch(prefix string) []string {
 	}
 	return res
 }
-
-
